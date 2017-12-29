@@ -6,11 +6,12 @@ import logging
 import requests
 from lxml import html
 from bs4 import BeautifulSoup
+import os
 
 class baiduyunSearch(scrapy.Spider):
   name = "baiduyun"
   download_timeout = 3
-  search_item_string = "joker game百度云"
+  search_item_string = os.environ.get("SEARCH_ITEM")
   search_item_encode = quote(search_item_string)
   main_baidu_search_url = "http://www.baidu.com/s?wd="
   start_urls = [main_baidu_search_url + search_item_encode]
