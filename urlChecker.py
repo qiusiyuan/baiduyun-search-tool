@@ -4,6 +4,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import json
 import logging
+import random
+import string
 
 def selenium_check_validation(pan_url):
   logging.warning("validating " + pan_url + "...")
@@ -30,13 +32,12 @@ if __name__=="__main__":
       validation = selenium_check_validation(pan_url)
       if validation:
         if not new_dict:
-          new_dict['page'] = host_url
-          new_dict['links'] = [{'link':pan_url}]
+          new_dict["page"] = host_url
+          new_dict["links"] = [{"link":pan_url}]
         else:
-          new_dict['links'].append({'link':pan_url})
+          new_dict["links"].append({"link":pan_url})
     if new_dict:
-      new_dict_list.append(new_dict)
-  with open('baidu.json', 'w') as fd:
-    fd.write(new_dict_list)
+      with open("baidu_raw" + ''.join(random.choice(string.digits) for _ in range(4)) + ".json", "w") as fd:
+        json.dump(new_dict,fd)
 
 
