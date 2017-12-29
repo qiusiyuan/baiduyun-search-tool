@@ -19,7 +19,6 @@ class baiduyunSearch(scrapy.Spider):
   def parse(self, response):
     block_link_xpath = ".//div[@class='result c-container ']//h3/a/@href"
     block_links_list = response.xpath(block_link_xpath).extract()
-    print(len(block_links_list))
     for block_link in block_links_list:
       yield scrapy.Request(url=block_link, callback=self.search_baiduyun_link, errback=self._handle_error)
     
@@ -43,15 +42,11 @@ class baiduyunSearch(scrapy.Spider):
 
   def baiduyun_link_filter(self, link_list):
     baidu_yun_link =[]
-    pattern = r"http(s?)(.*?)pan.baidu.com(.*?)\/s\/(.*?)"
+    pattern = r"http(s?)(.*?)pan.baidu.com(.*?)\/s(.*?)"
     prog = re.compile(pattern)
     for link in link_list:
       if prog.match(link):
-        code = self._valid_baidu_yun_link(link)
-        if code == 'good':
-          baidu_yun_link.append({"link": link, "pw": ""})
-        elif code == 'needpw':
-          baidu_yun_link.append({"link": link, "pw": "needpw"})
+        baidu_yun_link.append({"link": link, "pw": ""})
     return baidu_yun_link
   
 #####################################################################

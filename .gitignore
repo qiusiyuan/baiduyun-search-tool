@@ -1,0 +1,7 @@
+#python compiled file
+*.pyc
+
+#Logs
+*.log
+
+*job.yaml
