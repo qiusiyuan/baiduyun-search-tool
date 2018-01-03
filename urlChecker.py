@@ -9,17 +9,23 @@ import string
 
 def selenium_check_validation(pan_url):
   logging.warning("validating " + pan_url + "...")
-  driver = webdriver.PhantomJS()
+  driver = webdriver.Chrome()
   driver.set_window_size(1120, 550)
   driver.get(pan_url)
   driver.refresh()
   if "链接不存在" in driver.title:
     logging.warning("链接不存在")
-    return False
+    driver.quit()
+    return "invalid"
   else:
     logging.warning("链接有效")
-    return True
-  driver.quit()
+    ans = input("continue?")
+    if ans == "":
+      driver.quit()
+      return "continue"
+    else:
+      return "stop"
+  
 
 if __name__=="__main__":
   data = json.load(open('baidu_raw.json'))
@@ -30,14 +36,9 @@ if __name__=="__main__":
     for link in links:
       pan_url = link['link']
       validation = selenium_check_validation(pan_url)
-      if validation:
-        if not new_dict:
-          new_dict["page"] = host_url
-          new_dict["links"] = [{"link":pan_url}]
-        else:
-          new_dict["links"].append({"link":pan_url})
-    if new_dict:
-      with open("baidu_raw" + ''.join(random.choice(string.digits) for _ in range(4)) + ".json", "w") as fd:
-        json.dump(new_dict,fd)
-
-
+      if validation == "stop":
+        new_dict["page"] = host_url
+        new_dict["url"] = link['link']
+        with open("baidu_raw" + ''.join(random.choice(string.digits) for _ in range(4)) + ".json", "w") as fd:
+          json.dump(new_dict,fd)
+          break
